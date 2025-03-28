@@ -158,7 +158,16 @@ class Settings {
 
         this.field_clear_history_on_interval.connect('notify::active', (widget) => {
             this.field_clear_history_interval.set_sensitive(widget.active);
+            this.field_clear_history_interval_type.set_sensitive(widget.active);
         });
+
+        this.field_clear_history_interval_type = new Adw.ComboRow({
+            title: _("Interval"),
+            subtitle: _("Choose how the interval is used"),
+            model: this.#createHistoryClearingIntervalOptions()
+        });
+
+
 
         this.ui =  new Adw.PreferencesGroup({ title: _('UI') });
         this.behavior = new Adw.PreferencesGroup({title: _('Behavior')});
@@ -180,6 +189,7 @@ class Settings {
         this.behavior.add(this.field_clear_on_boot);
         this.behavior.add(this.field_clear_history_on_interval);
         this.behavior.add(this.field_clear_history_interval);
+        this.behavior.add(this.field_clear_history_interval_type);
 
         this.exclusion.add(this.field_exclusion_row);
         this.exclusion.add(this.field_exclusion_row_add_button);
@@ -219,8 +229,11 @@ class Settings {
         this.schema.bind(PrefsFields.CACHE_IMAGES, this.field_cache_images, 'active', Gio.SettingsBindFlags.DEFAULT);
         this.schema.bind(PrefsFields.CLEAR_HISTORY_ON_INTERVAL, this.field_clear_history_on_interval, 'active', Gio.SettingsBindFlags.DEFAULT);
         this.schema.bind(PrefsFields.CLEAR_HISTORY_INTERVAL, this.field_clear_history_interval, 'value', Gio.SettingsBindFlags.DEFAULT);
+        this.schema.bind(PrefsFields.CLEAR_HISTORY_INTERVAL_TYPE, this.field_clear_history_interval_type, 'selected', Gio.SettingsBindFlags.DEFAULT);
+
 
         this.field_clear_history_interval.set_sensitive(this.field_clear_history_on_interval.active);
+        this.field_clear_history_interval_type.set_sensitive(this.field_clear_history_on_interval.active);
         this.#fetchExludedAppsList();
     }
 
@@ -230,6 +243,19 @@ class Settings {
             _("Clipboard Content"),
             _("Both"),
             _("Neither")
+        ];
+        let liststore = new Gtk.StringList();
+        for (let option of options) {
+            liststore.append(option)
+        }
+        return liststore;
+    }
+
+    #createHistoryClearingIntervalOptions () {
+        let options = [
+            _("One Timer"),
+            _("One Timer, restarts on copy"),
+           // _("Individual Timer per entry"),
         ];
         let liststore = new Gtk.StringList();
         for (let option of options) {

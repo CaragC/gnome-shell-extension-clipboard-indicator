@@ -28,4 +28,5 @@ export const PrefsFields = {
     CLEAR_HISTORY_ON_INTERVAL       : 'clear-history-on-interval',
     CLEAR_HISTORY_INTERVAL          : 'clear-history-interval',
     NEXT_HISTORY_CLEAR              : 'next-history-clear',
+    CLEAR_HISTORY_INTERVAL_TYPE     : 'clear-history-interval-type',
 };

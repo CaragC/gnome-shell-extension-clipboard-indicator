@@ -20,31 +20,32 @@ const CLIPBOARD_TYPE = St.ClipboardType.CLIPBOARD;
 
 const INDICATOR_ICON = 'edit-paste-symbolic';
 
-let DELAYED_SELECTION_TIMEOUT = 750;
-let MAX_REGISTRY_LENGTH       = 15;
-let MAX_ENTRY_LENGTH          = 50;
-let CACHE_ONLY_FAVORITE       = false;
-let DELETE_ENABLED            = true;
-let MOVE_ITEM_FIRST           = false;
-let ENABLE_KEYBINDING         = true;
-let PRIVATEMODE               = false;
-let NOTIFY_ON_COPY            = true;
-let NOTIFY_ON_CYCLE           = true;
-let CONFIRM_ON_CLEAR          = true;
-let MAX_TOPBAR_LENGTH         = 15;
-let TOPBAR_DISPLAY_MODE       = 1; //0 - only icon, 1 - only clipboard content, 2 - both, 3 - neither
-let CLEAR_ON_BOOT             = false;
-let PASTE_ON_SELECT           = false;
-let DISABLE_DOWN_ARROW        = false;
-let STRIP_TEXT                = false;
-let KEEP_SELECTED_ON_CLEAR    = false;
-let PASTE_BUTTON              = true;
-let PINNED_ON_BOTTOM          = false;
-let CACHE_IMAGES              = true;
-let EXCLUDED_APPS             = [];
-let CLEAR_HISTORY_ON_INTERVAL = false;
-let CLEAR_HISTORY_INTERVAL    = 60;
-let NEXT_HISTORY_CLEAR        = -1;
+let DELAYED_SELECTION_TIMEOUT   = 750;
+let MAX_REGISTRY_LENGTH         = 15;
+let MAX_ENTRY_LENGTH            = 50;
+let CACHE_ONLY_FAVORITE         = false;
+let DELETE_ENABLED              = true;
+let MOVE_ITEM_FIRST             = false;
+let ENABLE_KEYBINDING           = true;
+let PRIVATEMODE                 = false;
+let NOTIFY_ON_COPY              = true;
+let NOTIFY_ON_CYCLE             = true;
+let CONFIRM_ON_CLEAR            = true;
+let MAX_TOPBAR_LENGTH           = 15;
+let TOPBAR_DISPLAY_MODE         = 1; //0 - only icon, 1 - only clipboard content, 2 - both, 3 - neither
+let CLEAR_ON_BOOT               = false;
+let PASTE_ON_SELECT             = false;
+let DISABLE_DOWN_ARROW          = false;
+let STRIP_TEXT                  = false;
+let KEEP_SELECTED_ON_CLEAR      = false;
+let PASTE_BUTTON                = true;
+let PINNED_ON_BOTTOM            = false;
+let CACHE_IMAGES                = true;
+let EXCLUDED_APPS               = [];
+let CLEAR_HISTORY_ON_INTERVAL   = false;
+let CLEAR_HISTORY_INTERVAL      = 60;
+let NEXT_HISTORY_CLEAR          = -1;
+let CLEAR_HISTORY_INTERVAL_TYPE = 0; // 0 - one interval for all entries, 1 - one interval for all entries but reset on copy, 2 - individual interval for each entry
 
 export default class ClipboardIndicatorExtension extends Extension {
     enable () {
@@ -782,6 +783,11 @@ const ClipboardIndicator = GObject.registerClass({
                         notif.addAction(_('Cancel'), this._cancelNotification);
                     });
                 }
+                log('[EXTENSION_LOG]', CLEAR_HISTORY_INTERVAL_TYPE);
+                
+                if(CLEAR_HISTORY_ON_INTERVAL && CLEAR_HISTORY_INTERVAL_TYPE === 1) {
+                    this._scheduleNextHistoryClear();
+                }
             }
         }
         catch (e) {
@@ -1114,6 +1120,7 @@ const ClipboardIndicator = GObject.registerClass({
         CLEAR_HISTORY_ON_INTERVAL   = settings.get_boolean(PrefsFields.CLEAR_HISTORY_ON_INTERVAL);
         CLEAR_HISTORY_INTERVAL      = settings.get_int(PrefsFields.CLEAR_HISTORY_INTERVAL);
         NEXT_HISTORY_CLEAR          = settings.get_int(PrefsFields.NEXT_HISTORY_CLEAR);
+        CLEAR_HISTORY_INTERVAL_TYPE = settings.get_int(PrefsFields.CLEAR_HISTORY_INTERVAL_TYPE);
     }
 
     async _onSettingsChange () {

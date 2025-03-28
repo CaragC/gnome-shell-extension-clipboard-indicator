@@ -215,5 +215,13 @@
                 The timestamp for the next scheduled history clear.
             </description>
         </key>
+        <key name="clear-history-interval-type" type="i">
+            <default>0</default>
+            <summary>Type of interval for clearing history</summary>
+            <description>
+                The type of interval for clearing history. 0 = one interval for all entries, 1 = one interval for all entries but reset on copy, 2 = individual interval for each entry
+            </description>
+            <range min="0" max="2"/>
+        </key>
     </schema>
 </schemalist>
