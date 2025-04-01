@@ -75,8 +75,14 @@ class Settings {
             title: _("Cache only pinned items")
         });
 
-        this.field_clear_notification_toggle = new Adw.SwitchRow({
-            title: _("Show notification on copy")
+        const notifyOptions = new Gtk.StringList();
+        notifyOptions.append('Dont notify');
+        notifyOptions.append('System notification');
+        notifyOptions.append('Flash icon');
+        
+        this.field_clear_notification_toggle = new Adw.ComboRow({
+            title: _("Notify on clear"),
+            model: notifyOptions,
         });
 
         this.field_cycle_notification_toggle = new Adw.SwitchRow({
@@ -183,7 +189,7 @@ class Settings {
         this.schema.bind(PrefsFields.PREVIEW_SIZE, this.field_preview_size, 'value', Gio.SettingsBindFlags.DEFAULT);
         this.schema.bind(PrefsFields.CACHE_FILE_SIZE, this.field_cache_size, 'value', Gio.SettingsBindFlags.DEFAULT);
         this.schema.bind(PrefsFields.CACHE_ONLY_FAVORITE, this.field_cache_disable, 'active', Gio.SettingsBindFlags.DEFAULT);
-        this.schema.bind(PrefsFields.NOTIFY_ON_COPY, this.field_clear_notification_toggle, 'active', Gio.SettingsBindFlags.DEFAULT);
+        this.schema.bind(PrefsFields.NOTIFY_ON_COPY, this.field_clear_notification_toggle, 'selected', Gio.SettingsBindFlags.DEFAULT);
         this.schema.bind(PrefsFields.NOTIFY_ON_CYCLE, this.field_cycle_notification_toggle, 'active', Gio.SettingsBindFlags.DEFAULT);
         this.schema.bind(PrefsFields.CONFIRM_ON_CLEAR, this.field_confirm_clear_toggle, 'active', Gio.SettingsBindFlags.DEFAULT);
         this.schema.bind(PrefsFields.MOVE_ITEM_FIRST, this.field_move_item_first, 'active', Gio.SettingsBindFlags.DEFAULT);

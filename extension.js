@@ -28,7 +28,7 @@ let DELETE_ENABLED            = true;
 let MOVE_ITEM_FIRST           = false;
 let ENABLE_KEYBINDING         = true;
 let PRIVATEMODE               = false;
-let NOTIFY_ON_COPY            = true;
+let NOTIFY_ON_COPY            = 0; // 0 - no notification, 1 - system notification, 2 - flash icon
 let NOTIFY_ON_CYCLE           = true;
 let CONFIRM_ON_CLEAR          = true;
 let MAX_TOPBAR_LENGTH         = 15;
@@ -728,6 +728,13 @@ const ClipboardIndicator = GObject.registerClass({
                             this._moveItemFirst(menuItem);
                         }
 
+                        if (NOTIFY_ON_COPY == 2) {
+                            this.icon.add_style_class_name('clipboard-indicator-icon-flash');
+                            setTimeout(() => {
+                                this.icon.remove_style_class_name('clipboard-indicator-icon-flash');
+                            }, 500);
+                        }
+
                         return;
                     }
                 }
@@ -735,10 +742,16 @@ const ClipboardIndicator = GObject.registerClass({
                 this.#addToCache(result);
                 this._addEntry(result, true, false);
                 this._removeOldestEntries();
-                if (NOTIFY_ON_COPY) {
+                if (NOTIFY_ON_COPY == 1) {
                     this._showNotification(_("Copied to clipboard"), notif => {
                         notif.addAction(_('Cancel'), this._cancelNotification);
                     });
+                }
+                else if (NOTIFY_ON_COPY == 2) {
+                    this.icon.add_style_class_name('clipboard-indicator-icon-flash');
+                    setTimeout(() => {
+                        this.icon.remove_style_class_name('clipboard-indicator-icon-flash');
+                    }, 500);
                 }
             }
         }
@@ -913,7 +926,7 @@ const ClipboardIndicator = GObject.registerClass({
         CACHE_ONLY_FAVORITE    = settings.get_boolean(PrefsFields.CACHE_ONLY_FAVORITE);
         DELETE_ENABLED         = settings.get_boolean(PrefsFields.DELETE);
         MOVE_ITEM_FIRST        = settings.get_boolean(PrefsFields.MOVE_ITEM_FIRST);
-        NOTIFY_ON_COPY         = settings.get_boolean(PrefsFields.NOTIFY_ON_COPY);
+        NOTIFY_ON_COPY         = settings.get_int(PrefsFields.NOTIFY_ON_COPY);
         NOTIFY_ON_CYCLE        = settings.get_boolean(PrefsFields.NOTIFY_ON_CYCLE);
         CONFIRM_ON_CLEAR       = settings.get_boolean(PrefsFields.CONFIRM_ON_CLEAR);
         ENABLE_KEYBINDING      = settings.get_boolean(PrefsFields.ENABLE_KEYBINDING);

@@ -2,6 +2,10 @@
     color: rgba(255,255,255,0.3);
 }
 
+.clipboard-indicator-icon-flash {
+    color: rgb(128, 255, 172);
+}
+
 .ci-notification-label {
     font-weight: bold;
     color: #ffffff;

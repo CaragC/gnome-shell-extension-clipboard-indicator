@@ -93,11 +93,12 @@
         </description>
     </key>
 
-    <key name="notify-on-copy" type="b">
-        <default>false</default>
-        <summary>Show notification on copy to clipboard</summary>
+    <key name="notify-on-copy" type="i">
+        <default>0</default>
+        <summary>Notify on copy to clipboard</summary>
         <description>
-            If true, a notification is shown when content is copied to clipboard.
+            Wheter to notify the user when copying to clipboard.
+            0 - No notification, 1 - System notification, 2 - Flash icon
         </description>
     </key>
 
