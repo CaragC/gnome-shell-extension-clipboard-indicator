@@ -1,4 +1,4 @@
-MODULES = *.js locale/*/LC_MESSAGES/*.mo metadata.json stylesheet.css LICENSE.rst README.rst schemas/
+
 INSTALLPATH=~/.local/share/gnome-shell/extensions/clipboard-indicator@tudmotu.com/
 
 all: compile-locales compile-settings
@@ -18,7 +18,13 @@ update-po-files:
 install: all
 	rm -rf $(INSTALLPATH)
 	mkdir -p $(INSTALLPATH)
-	cp -r $(MODULES) $(INSTALLPATH)/
+	mkdir -p $(INSTALLPATH)/ui
+	mkdir -p $(INSTALLPATH)/lib
+	cp *.js metadata.json stylesheet.css LICENSE.rst README.rst $(INSTALLPATH)/
+	cp -r schemas $(INSTALLPATH)/
+	cp ui/*.js $(INSTALLPATH)/ui/
+	cp lib/*.js $(INSTALLPATH)/lib/
+	if [ -d locale ]; then cp -r locale $(INSTALLPATH)/; fi
 
 nested-session:
 	dbus-run-session -- env MUTTER_DEBUG_NUM_DUMMY_MONITORS=1 \
